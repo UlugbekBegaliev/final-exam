@@ -1,5 +1,7 @@
 package com.example.finalexam.controllers;
 
+import com.example.finalexam.dtos.ReviewDTO;
+import com.example.finalexam.entities.Image;
 import com.example.finalexam.entities.Place;
 import com.example.finalexam.repositories.PlaceRepository;
 import com.example.finalexam.services.PagePropertyService;
@@ -13,10 +15,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.List;
 
 @Controller
 @RequestMapping
@@ -39,6 +43,50 @@ public class MainController {
         if (!userEmail.equals("anonymousUser")){
             model.addAttribute("authorized", true);
         }
-        return "main-page";
+        return "main_page";
+    }
+
+    @PostMapping("/createReview")
+    public String addNewReview(@RequestParam("place_id") Integer placeId,
+                               @RequestParam("rating") Integer rating,
+                               @RequestParam("message_content") String content){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = auth.getName();
+        return reviewService.createNewReview(placeId, content, userEmail, rating);
+    }
+
+    @GetMapping("/create_place")
+    public String createNewPlacePage(Model model) {
+        return "create_place";
+    }
+
+    @PostMapping("/create_place")
+    public String createNewPlace(@RequestParam("place_name") String name, @RequestParam("place_description") String description,
+                              @RequestParam("place_image") MultipartFile image) throws IOException {
+        int id = placeService.addNewPlace(name, description, image);
+        return "redirect:/places/"+id;
+    }
+
+    @GetMapping("/places/{id:\\d+?}")
+    public String getPlacesPage(@PathVariable int id, Model model){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = auth.getName();
+        List<Image> placeImage = placeService.getPlaceImages(id);
+        if(placeImage!=null){
+            model.addAttribute("placeImage", placeImage);
+        }
+        List<ReviewDTO> reviewDTOS = reviewService.getPlaceReviews(id);
+        model.addAttribute("place", placeRepository.findById(id).get());
+        if(reviewDTOS!=null){
+            model.addAttribute("reviews", reviewDTOS);
+        }else{
+            model.addAttribute("reviews", false);
+        }
+        if(!userEmail.equals("anonymousUser")){
+            model.addAttribute("authorized", true);
+        }
+        List<Integer> rating = reviewService.getValue();
+        model.addAttribute("rating", rating);
+        return "place_page";
     }
 }

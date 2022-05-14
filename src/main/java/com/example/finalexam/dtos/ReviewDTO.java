@@ -12,21 +12,10 @@ import java.time.LocalTime;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReviewDTO {
 
-    private int id;
-    private int rating;
+    private Integer id;
+    private String login;
     private String content;
     private LocalDate date;
     private LocalTime time;
-
-    public static ReviewDTO from(Review review){
-        return builder()
-                .id(review.getId())
-                .rating(review.getRating())
-                .content(review.getContent())
-                .date(LocalDate.from(review.getReviewDate()))
-                .time(LocalTime.from(review.getReviewTime()))
-                .build();
-    }
-
 }
 
