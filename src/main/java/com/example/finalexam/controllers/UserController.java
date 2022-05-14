@@ -1,5 +1,6 @@
 package com.example.finalexam.controllers;
 
+import com.example.finalexam.dtos.UserDTO;
 import com.example.finalexam.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -37,6 +38,13 @@ public class UserController {
 
         userService.register(name, email, login, password);
         return "redirect:/login";
+    }
+
+    @GetMapping("/profile")
+    public String getProfilePage(Model model, Principal principal){
+        UserDTO user = userService.getByEmail(principal.getName());
+        model.addAttribute("dto", user);
+        return "profile";
     }
 
 }

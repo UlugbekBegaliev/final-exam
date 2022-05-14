@@ -3,6 +3,7 @@ package com.example.finalexam.services;
 import com.example.finalexam.dtos.UserDTO;
 import com.example.finalexam.entities.User;
 import com.example.finalexam.exceptions.UserAlreadyExistsException;
+import com.example.finalexam.exceptions.UserNotFoundException;
 import com.example.finalexam.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +15,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    public UserDTO getByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
+
+        return UserDTO.from(user);
+    }
 
     public UserDTO register(String name, String email, String login, String password) throws UserAlreadyExistsException {
 
