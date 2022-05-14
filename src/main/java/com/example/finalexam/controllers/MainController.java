@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -88,5 +89,13 @@ public class MainController {
         List<Integer> rating = reviewService.getValue();
         model.addAttribute("rating", rating);
         return "place_page";
+    }
+
+    @GetMapping("/search/{search}")
+    public String search(@PathVariable("search") String search, Principal principal,
+                         Model model, Pageable pageable) {
+        List<Place> places = placeService.searchPlaces(search, pageable);
+        model.addAttribute("places", places);
+        return "search";
     }
 }

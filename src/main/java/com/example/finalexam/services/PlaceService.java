@@ -7,12 +7,14 @@ import com.example.finalexam.entities.Place;
 import com.example.finalexam.repositories.ImageRepository;
 import com.example.finalexam.repositories.PlaceRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,5 +53,18 @@ public class PlaceService {
         placeRepository.save(place);
 
         return place.getId();
+    }
+
+    public List<Place> searchPlaces(String searchText, Pageable pageable) {
+        List<Place> places = placeRepository.findAll();
+        List<Place> thisPlaces = new ArrayList<>();
+        for(Place p: places){
+            if(p.getName().toLowerCase().contains(searchText.toLowerCase())){
+                thisPlaces.add(p);
+            }else if(p.getDescription().toLowerCase().contains(searchText.toLowerCase())){
+                thisPlaces.add(p);
+            }
+        }
+        return thisPlaces;
     }
 }
