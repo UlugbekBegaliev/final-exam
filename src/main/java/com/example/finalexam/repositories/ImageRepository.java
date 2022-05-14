@@ -1,6 +1,6 @@
-package com.example.finalexam.repository;
+package com.example.finalexam.repositories;
 
-import com.example.finalexam.entity.Image;
+import com.example.finalexam.entities.Image;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

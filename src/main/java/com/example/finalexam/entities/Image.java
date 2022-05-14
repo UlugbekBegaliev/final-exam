@@ -1,4 +1,4 @@
-package com.example.finalexam.entity;
+package com.example.finalexam.entities;
 
 import lombok.*;
 

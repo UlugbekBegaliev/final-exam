@@ -1,16 +1,16 @@
-package com.example.finalexam.entity;
+package com.example.finalexam.entities;
 
 import lombok.*;
 
 import javax.persistence.*;
 
 @Data
+@Entity
 @Builder
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor
-@Entity
-@Table(name = "users")
-public class User {
+@Table(name = "places")
+public class Place {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,11 +20,11 @@ public class User {
     private String name;
 
     @Column(length = 128)
-    private String email;
+    private String image;
 
-    @Column(length = 128)
-    private String login;
+    @Column
+    private String description;
 
-    @Column(length = 128)
-    private String password;
+    @Column
+    private double rating;
 }
