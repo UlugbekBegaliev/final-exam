@@ -25,4 +25,6 @@ public class PlaceService {
                 .map(PlaceDTO::from)
                 .collect(Collectors.toList());
     }
+
+
 }
