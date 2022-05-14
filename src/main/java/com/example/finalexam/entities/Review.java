@@ -3,6 +3,8 @@ package com.example.finalexam.entities;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Data
 @Builder
@@ -27,4 +29,10 @@ public class Review {
 
     @Column(length = 128)
     private String content;
+
+    @Column
+    private LocalDate reviewDate;
+
+    @Column
+    private LocalTime reviewTime;
 }
