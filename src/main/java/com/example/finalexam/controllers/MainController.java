@@ -69,7 +69,7 @@ public class MainController {
         return "redirect:/places/" + id;
     }
 
-    @GetMapping("/places/{id:\\d+?}")
+    @GetMapping("/places/{id}")
     public String getPlacesPage(@PathVariable int id, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = auth.getName();
