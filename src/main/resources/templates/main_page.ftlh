@@ -18,7 +18,7 @@
                         </#list>
                     </div>
                 <#else>
-                    <h4>There is no places</h4>
+                    <h4>Нет заведений</h4>
                 </#if>
             </div>
         </div>

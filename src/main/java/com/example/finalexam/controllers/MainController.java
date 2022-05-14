@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
@@ -34,14 +35,14 @@ public class MainController {
     private final PagePropertyService pagePropertyService;
 
     @GetMapping("/")
-    public String getMainPage(Model model, Pageable pageable, HttpServletRequest request){
+    public String getMainPage(Model model, Pageable pageable, HttpServletRequest request) {
         Page<Place> places = placeRepository.findAll(pageable);
         String hsr = request.getRequestURI();
         Model placeModel = model.addAttribute("places", placeService.findAllPlaces());
         PageStructure.constructPageable(places, pagePropertyService.getDefaultPageSize(), placeModel, hsr);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = auth.getName();
-        if (!userEmail.equals("anonymousUser")){
+        if (!userEmail.equals("anonymousUser")) {
             model.addAttribute("authorized", true);
         }
         return "main_page";
@@ -50,7 +51,7 @@ public class MainController {
     @PostMapping("/createReview")
     public String addNewReview(@RequestParam("place_id") Integer placeId,
                                @RequestParam("rating") Integer rating,
-                               @RequestParam("message_content") String content){
+                               @RequestParam("message_content") String content) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = auth.getName();
         return reviewService.createNewReview(placeId, content, userEmail, rating);
@@ -63,27 +64,27 @@ public class MainController {
 
     @PostMapping("/create_place")
     public String createNewPlace(@RequestParam("place_name") String name, @RequestParam("place_description") String description,
-                              @RequestParam("place_image") MultipartFile image) throws IOException {
+                                 @RequestParam("place_image") MultipartFile image) throws IOException {
         int id = placeService.addNewPlace(name, description, image);
-        return "redirect:/places/"+id;
+        return "redirect:/places/" + id;
     }
 
     @GetMapping("/places/{id:\\d+?}")
-    public String getPlacesPage(@PathVariable int id, Model model){
+    public String getPlacesPage(@PathVariable int id, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = auth.getName();
         List<Image> placeImage = placeService.getPlaceImages(id);
-        if(placeImage!=null){
+        if (placeImage != null) {
             model.addAttribute("placeImage", placeImage);
         }
         List<ReviewDTO> reviewDTOS = reviewService.getPlaceReviews(id);
         model.addAttribute("place", placeRepository.findById(id).get());
-        if(reviewDTOS!=null){
+        if (reviewDTOS != null) {
             model.addAttribute("reviews", reviewDTOS);
-        }else{
+        } else {
             model.addAttribute("reviews", false);
         }
-        if(!userEmail.equals("anonymousUser")){
+        if (!userEmail.equals("anonymousUser")) {
             model.addAttribute("authorized", true);
         }
         List<Integer> rating = reviewService.getValue();
@@ -97,5 +98,15 @@ public class MainController {
         List<Place> places = placeService.searchPlaces(search, pageable);
         model.addAttribute("places", places);
         return "search";
+    }
+
+    @PostMapping("/add_image")
+    public String addImage(@RequestParam("place_id") Integer placeId,
+                           @RequestParam("place_image") MultipartFile image) throws IOException {
+        if (image.getOriginalFilename().equals("")) {
+            return "redirect:/places/" + placeId;
+        }
+        Integer id = placeService.addImage(image, placeId);
+        return "redirect:/places/" + id;
     }
 }

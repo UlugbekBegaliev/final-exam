@@ -67,4 +67,21 @@ public class PlaceService {
         }
         return thisPlaces;
     }
+
+    public Integer addImage(MultipartFile image, Integer placeId) throws IOException {
+        String path ="./src/main/resources/static/images";
+        File imageFile = new File(path + "/" + image.getOriginalFilename());
+        FileOutputStream fos = new FileOutputStream(imageFile);
+        fos.write(image.getBytes());
+        fos.close();
+
+        Image image1 = Image.builder()
+                .placeImage("/images/"+ image.getOriginalFilename())
+                .placeId(placeId)
+                .build();
+
+        imageRepository.save(image1);
+
+        return placeId;
+    }
 }
