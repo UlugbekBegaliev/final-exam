@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS images(
+id INT NOT NULL,
+placeImage VARCHAR(128) NOT NULL,
+place_id INT NOT NULL,
+PRIMARY KEY (id),
+FOREIGN KEY ("place_id") REFERENCES places (id)
+);

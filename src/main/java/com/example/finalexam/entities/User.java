@@ -27,4 +27,12 @@ public class User {
 
     @Column(length = 128)
     private String password;
+
+    @Column(length = 128)
+    @Builder.Default
+    private String role = "USER";
+
+    @Column
+    @Builder.Default
+    private boolean enabled = true;
 }
